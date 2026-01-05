@@ -5,17 +5,11 @@
 
 ## 📊 My Digital Footprint
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical" alt="Stats" />
-</p>
+![Stats](https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical)
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical" alt="Langs" />
-</p>
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical)
 
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical" alt="Streak" />
-</p>
+![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical)
 
 ---
 

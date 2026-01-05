@@ -13,21 +13,14 @@ Ticketza is a centralized event ticketing platform designed for the South Africa
 - **Profile Management**: Track loyalty points and manage digital tickets.
 
 ## 📊 My Digital Footprint - Kid Of Dynamic
-<p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=Raphasha27&theme=radical&no-bg=true&no-frame=true&column=4" alt="Trophies" />
-</p>
+![Trophies](https://github-profile-trophy.vercel.app/?username=Raphasha27&theme=radical&no-bg=true&no-frame=true&column=4)
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical" alt="Stats" />
-</p>
+![Stats](https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical)
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical" alt="Langs" />
-</p>
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical)
 
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical" alt="Streak" />
-</p>
+![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical)
+
 
 
 ## 🛠️ Tech Stack & Languages
