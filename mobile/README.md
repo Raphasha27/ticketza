@@ -1,73 +1,57 @@
-# Ticketza Mobile App
+# 📱 Ticketza Mobile Application
+### Premium Event Ticketing in the Palm of Your Hand 🇿🇦
 
-A React Native Expo mobile application for event ticketing in South Africa.
+---
 
-## Features
+## 🚀 Overview
+The **Ticketza Mobile App** is a high-fidelity, performance-optimized experience built with **Expo (React Native)**. Designed specifically for the fast-paced South African market, it offers smooth transitions, vibrant gradients, and a secure booking flow.
 
-- Browse upcoming events
-- View event details with maps
-- Add tickets to cart
-- Multiple payment methods (PayFast, SnapScan, Ozow, Card)
-- Digital tickets with QR codes
-- Real-time cart management
+---
 
-## Installation
+## ✨ Features
+- **Expo SDK 50+**: State-of-the-art mobile performance.
+- **Premium Mzansi UI**: Dark mode, glassmorphism, and HSL gradients.
+- **Dynamic Search**: Instant filtering for artists, venues, and vibes.
+- **Multi-Method Checkout**: Securely pay and receive tickets via **Email** or **WhatsApp**.
+- **Loyalty System**: Integrated platinum member profile and tracking.
 
-```bash
-cd mobile
-npm install
-```
+---
 
-## Running the App
+## 🖼️ Mobile App Preview
+| Home | Search | Detail |
+| :---: | :---: | :---: |
+| ![Home](../screenshots/home.png) | ![Search](../screenshots/search.png) | ![Detail](../screenshots/detail.png) |
 
-### iOS Simulator
-```bash
-npm run ios
-```
+| Cart | Profile | Success |
+| :---: | :---: | :---: |
+| ![Cart](../screenshots/cart.png) | ![Profile](../screenshots/profile.png) | ![Success](../screenshots/success.png) |
 
-### Android Emulator
-```bash
-npm run android
-```
+---
 
-### Expo Go (Physical Device)
-```bash
-npm start
-```
-Then scan the QR code with:
-- iOS: Camera app
-- Android: Expo Go app
+## 🛠️ Technology Stack
+- **Framework**: Expo (React Native)
+- **Icons**: Ionicons (@expo/vector-icons)
+- **Styling**: StyleSheet (HSL Theme Engine)
+- **Logic**: React Hooks & Context API
 
-## Tech Stack
+---
 
-- React Native
-- Expo
-- Expo Linear Gradient
-- React Native Maps (ready to integrate)
+## 🚀 Getting Started
 
-## Screens
+1. **Setup**:
+   ```bash
+   cd mobile
+   npm install
+   ```
 
-1. **Home** - Browse events with search
-2. **Event Details** - View event info, select tickets
-3. **Cart** - Review selected tickets
-4. **Payment** - Choose payment method
-5. **Confirmation** - View digital tickets with QR codes
+2. **Launch Development Server**:
+   ```bash
+   npx expo start --lan
+   ```
 
-## Payment Methods
+3. **Open on Device**: Scan the QR code using the **Expo Go** app.
 
-- PayFast
-- SnapScan
-- Ozow
-- Credit/Debit Card
+---
 
-## Development
-
-The app uses local state management for simplicity. To connect to the backend API:
-
-1. Update API endpoints in the components
-2. Replace mock data with API calls
-3. Add authentication
-
-## License
-
-MIT
+### 🔥 Built by Kid Of Dynamic 🇿🇦
+*Pushing the boundaries of mobile excellence in Mzansi.*

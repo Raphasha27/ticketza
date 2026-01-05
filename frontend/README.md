@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌐 Ticketza Web Portal
+### The Ultimate South African Event Dashboard 🇿🇦
 
-## Getting Started
+---
 
-First, run the development server:
+## 🚀 Overview
+**Ticketza Web** is a modern, high-performance web dashboard built with **Next.js 14**. It serves as the administrative and browsing hub for the Ticketza ecosystem, providing a seamless experience for finding and booking South Africa's finest events.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
+- **Modern UI/UX**: Crafted with vanilla CSS for maximum speed and a premium aesthetic.
+- **Real-time Discovery**: Fast events fetching and filtering.
+- **Glassmorphic Design**: Sleek gradients and transparent elements.
+- **Responsive Layout**: Perfect viewing experience on desktops, tablets, and mobile browsers.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Technology Stack
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Vanilla CSS (Premium Mzansi Theme)
+- **Logic**: TypeScript
+- **State**: React Hooks & Context API
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🖼️ Web Interface Preview
+<p align="center">
+  <img src="../screenshots/home.png" alt="Web Preview" width="800" />
+</p>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⚙️ Development Setup
 
-## Deploy on Vercel
+1. **Install Dependencies**:
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Run Locally**:
+   ```bash
+   npm run dev
+   ```
+   *Dashboard will be live at `http://localhost:3000`*
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 🔥 Built by Kid Of Dynamic 🇿🇦
+*Crafting elite digital experiences for the Mzansi tech scene.*
