@@ -13,13 +13,14 @@ Ticketza is a centralized event ticketing platform designed for the South Africa
 - **Profile Management**: Track loyalty points and manage digital tickets.
 
 ## 📊 My Digital Footprint - Kid Of Dynamic
-![Trophies](https://github-profile-trophy.vercel.app/?username=Raphasha27&theme=radical&no-bg=true&no-frame=true&column=4)
+[![Trophies](https://github-profile-trophy.vercel.app/?username=Raphasha27&theme=radical&no-bg=true&no-frame=true&column=4)](https://github.com/ryo-ma/github-profile-trophy)
 
-![Stats](https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical)
+[![Raphasha's GitHub stats](https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical)](https://github.com/anuraghazra/github-readme-stats)
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical)
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical)](https://github.com/anuraghazra/github-readme-stats)
 
-![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical)
+[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical)](https://git.io/streak-stats)
+
 
 
 
