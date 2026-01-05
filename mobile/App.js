@@ -282,6 +282,7 @@ export default function App() {
             <ProfileRow icon="options" label="Preferences" />
             <ProfileRow icon="help-circle" label="Support" />
           </View>
+          <Text style={{ textAlign: 'center', color: '#555', marginTop: 10, fontSize: 12, fontWeight: '800' }}>Built by Kid Of Dynamic 🇿🇦</Text>
         </ScrollView>
         <NavigationBar />
       </SafeAreaView>

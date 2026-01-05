@@ -42,4 +42,4 @@ Check out the latest screenshots of the mobile experience:
 - **API Docs**: `http://localhost:8000/docs`
 
 ---
-*Built with ❤️ by Antigravity for the Ticketza Platform.*
+*Built with ❤️ by Kid Of Dynamic for the Ticketza Platform.*
