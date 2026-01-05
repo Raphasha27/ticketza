@@ -1,5 +1,9 @@
 
-@colors {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
   --secondary: #ec4899;
@@ -8,13 +12,7 @@
   --surface: #1e293b;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-}
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 15, 23, 42;
   --background-end-rgb: 0, 0, 0;
@@ -46,5 +44,23 @@ body {
 }
 
 .glass-card {
-    @apply glass rounded-2xl p-6 transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/20;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Tailwind utilities applied directly */
+    border-radius: 1rem; /* rounded-2xl */
+    padding: 1.5rem; /* p-6 */
+    transition-property: transform; /* transition-transform */
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.glass-card:hover {
+    transform: translateY(-0.25rem); /* hover:-translate-y-1 */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* hover:shadow-lg */
+    --tw-shadow-color: rgb(99 102 241 / 0.2);
+    /* Manually adding the colored shadow since we aren't using @apply */
+    box-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
 }

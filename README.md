@@ -44,11 +44,12 @@ Ticketza is a centralized event ticketing platform where event organizers list e
 
 ### Phase 3 – Polish
 - [ ] Analytics & Heatmaps
-- [ ] Admin Controls
+- [x] Admin Controls
 - [ ] Production Deployment
 
 ## 🎮 Demo Features Ready
 - **Frontend**: http://localhost:3000
 - **Organizer Dashboard**: http://localhost:3000/organizer/dashboard
+- **Admin Dashboard**: http://localhost:3000/admin/dashboard
 - **Seat Map Demo**: http://localhost:3000/events/1
 
