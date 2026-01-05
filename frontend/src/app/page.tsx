@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ArrowRight, Calendar, MapPin, ShieldCheck, Zap, BarChart3, Ticket, Sparkles, Trophy, Heart, Music, Users, Smartphone, Globe, Lock } from "lucide-react";
 import Link from "next/link";
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -17,22 +17,22 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as any }
   }
 };
 
-const floatingVariants = {
+const floatingVariants: Variants = {
   animate: {
     y: [0, -20, 0],
     transition: {
       duration: 4,
       repeat: Infinity,
-      ease: "easeInOut"
+      ease: "easeInOut" as any
     }
   }
 };
@@ -50,7 +50,7 @@ export default function Home() {
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3]
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" as any }}
           className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full blur-[120px] opacity-30" 
         />
         <motion.div 
@@ -58,7 +58,7 @@ export default function Home() {
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.5, 0.3]
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" as any, delay: 1 }}
           className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full blur-[120px] opacity-30" 
         />
         <motion.div 
@@ -66,7 +66,7 @@ export default function Home() {
             scale: [1, 1.1, 1],
             opacity: [0.2, 0.4, 0.2]
           }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" as any, delay: 2 }}
           className="absolute top-1/3 left-1/2 w-[400px] h-[400px] bg-gradient-to-bl from-indigo-600 to-purple-600 rounded-full blur-[100px] opacity-20" 
         />
         
@@ -324,7 +324,7 @@ export default function Home() {
                 animate={{ 
                   backgroundPosition: ['0% 0%', '100% 100%'],
                 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" as any }}
                 className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(6,182,212,0.1)_50%,transparent_75%)] bg-[length:250%_250%]"
               />
             </div>
@@ -332,7 +332,7 @@ export default function Home() {
             <div className="relative z-10 text-center">
               <motion.div
                 animate={{ rotate: [0, 360] }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" as any }}
                 className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-cyan-400 to-purple-600 flex items-center justify-center"
               >
                 <Sparkles className="w-10 h-10 text-white" />

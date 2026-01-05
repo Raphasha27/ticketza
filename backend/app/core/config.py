@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Ticketza"
     API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/ticketza"
+    DATABASE_URL: str = "sqlite:///./ticketza.db"
     
     # Back-end CORS Origins
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
