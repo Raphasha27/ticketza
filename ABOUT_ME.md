@@ -6,12 +6,15 @@
 ## 📊 My Digital Footprint
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=vue-dark&hide_border=true&bg_color=00000000&title_color=7F00FF&icon_color=FF00FF&text_color=FFFFFF" alt="Stats" width="400" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=vue-dark&hide_border=true&bg_color=00000000&title_color=7F00FF&text_color=FFFFFF" alt="Langs" width="300" />
+  <img src="https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical" alt="Stats" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=vue-dark&hide_border=true&background=00000000&stroke=7F00FF&ring=FF00FF&fire=FF00FF&currStreakNum=FFFFFF" alt="Streak" width="710" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical" alt="Langs" />
+</p>
+
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical" alt="Streak" />
 </p>
 
 ---
