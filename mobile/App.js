@@ -11,7 +11,8 @@ import {
   ActivityIndicator, 
   Dimensions, 
   Platform, 
-  StatusBar as RNStatusBar 
+  StatusBar as RNStatusBar,
+  Alert
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -39,7 +40,7 @@ const Theme = {
 const MOCK_EVENTS = [
   { 
     id: 1, 
-    name: 'Soweto Derby: Chiefs vs Pirates', 
+    name: 'Soweto Derby: Kaizer Chiefs vs Orlando Pirates - The Ultimate Showdown', 
     venue: 'FNB Stadium (Soccer City), Johannesburg', 
     date: 'Oct 26, 2026', 
     image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800', 
@@ -49,7 +50,7 @@ const MOCK_EVENTS = [
   },
   { 
     id: 2, 
-    name: 'Black Coffee: Africa Rising II', 
+    name: 'Black Coffee: Africa Rising II - Live Orchestral Performance', 
     venue: 'Moses Mabhida Stadium, Durban', 
     date: 'Dec 15, 2026', 
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800', 
@@ -59,7 +60,7 @@ const MOCK_EVENTS = [
   },
   { 
     id: 3, 
-    name: 'Spring Fiesta 2026', 
+    name: 'Spring Fiesta 2026: The Soul of the City Music Festival', 
     venue: 'Wild Waters, Boksburg', 
     date: 'Oct 05, 2026', 
     image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800', 
@@ -77,6 +78,18 @@ export default function App() {
   const [deliveryMethod, setDeliveryMethod] = useState('digital');
   const [events, setEvents] = useState(MOCK_EVENTS);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // --- BUTTON HELPERS ---
+  const handleFeatureAlert = (title) => {
+    Alert.alert("Kid Of Dynamic Premium", `${title} feature is currently in production for the next update! 🚀🇿🇦`, [{ text: "Can't wait!" }]);
+  };
+
+  const logout = () => {
+    Alert.alert("Logout", "Are you sure you want to sign out?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", onPress: () => setCurrentScreen('home'), style: "destructive" }
+    ]);
+  };
 
   // --- CART CALCS ---
   const cartTickets = Object.values(cart).reduce((a, b) => a + b, 0);
@@ -180,7 +193,9 @@ export default function App() {
          <Text style={styles.searchHeading}>Trending Categories</Text>
          <View style={styles.categoryWrap}>
             {['Music', 'Sports', 'Comedy', 'Arts', 'Festivals', 'Virtual'].map(c => (
-              <TouchableOpacity key={c} style={styles.categoryItem}><Text style={styles.categoryItemText}>{c}</Text></TouchableOpacity>
+              <TouchableOpacity key={c} style={styles.categoryItem} onPress={() => handleFeatureAlert(`${c} Discovery`)}>
+                <Text style={styles.categoryItemText}>{c}</Text>
+              </TouchableOpacity>
             ))}
          </View>
       </ScrollView>
@@ -204,6 +219,9 @@ export default function App() {
           <View style={styles.detailRow}><Ionicons name="location-outline" size={22} color={Theme.primary} /><Text style={styles.detailMetaText}>{selectedEvent?.venue}</Text></View>
           <Text style={styles.detailSecH}>Description</Text>
           <Text style={styles.detailBody}>{selectedEvent?.description}</Text>
+          <View style={styles.detailShareBox}>
+            <TouchableOpacity style={styles.shareBtn} onPress={() => handleFeatureAlert('Social Share')}><Ionicons name="share-social" size={20} color="#fff" /><Text style={styles.shareTxt}>Share Event</Text></TouchableOpacity>
+          </View>
           <View style={{ height: 200 }} />
         </ScrollView>
       </View>
@@ -230,7 +248,7 @@ export default function App() {
         <View style={styles.scHeader}>
           <TouchableOpacity onPress={() => setCurrentScreen('home')}><Ionicons name="chevron-back" size={24} color="#fff" /></TouchableOpacity>
           <Text style={styles.scTitle}>Cart</Text>
-          <Ionicons name="wallet-outline" size={24} color="#fff" />
+          <TouchableOpacity onPress={() => handleFeatureAlert('Digital Wallet')}><Ionicons name="wallet-outline" size={24} color="#fff" /></TouchableOpacity>
         </View>
       </SafeAreaView>
       <ScrollView style={styles.padding20}>
@@ -241,31 +259,41 @@ export default function App() {
             <View key={id} style={styles.cartCard}>
               <Image source={{ uri: event.image }} style={styles.cartCardImg} />
               <View style={styles.cartCardContent}>
-                <Text style={styles.cartCardName}>{event.name}</Text>
+                <Text style={styles.cartCardName} numberOfLines={2}>{event.name}</Text>
                 <Text style={styles.cartCardPrice}>R{event.price} x {count}</Text>
               </View>
             </View>
           );
         })}
         
-        <Text style={styles.scH2}>Delivery Option</Text>
-        <View style={styles.methodFlex}>
-          <TouchableOpacity style={[styles.mBtn, deliveryMethod === 'digital' && styles.mBtnActive]} onPress={() => setDeliveryMethod('digital')}>
-            <Ionicons name="mail" size={28} color="#fff" /><Text style={styles.mBtnTxt}>Email</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.mBtn, deliveryMethod === 'whatsapp' && styles.mBtnActive]} onPress={() => setDeliveryMethod('whatsapp')}>
-            <Ionicons name="logo-whatsapp" size={28} color="#fff" /><Text style={styles.mBtnTxt}>WhatsApp</Text>
-          </TouchableOpacity>
-        </View>
+        {cartTickets === 0 ? (
+          <View style={styles.emptyCart}>
+            <Ionicons name="cart-outline" size={80} color="#333" />
+            <Text style={styles.emptyCartText}>Your cart is empty</Text>
+            <TouchableOpacity style={styles.contBtn} onPress={() => setCurrentScreen('home')}><Text style={styles.contBtnTxt}>Browse Events</Text></TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.scH2}>Delivery Option</Text>
+            <View style={styles.methodFlex}>
+              <TouchableOpacity style={[styles.mBtn, deliveryMethod === 'digital' && styles.mBtnActive]} onPress={() => setDeliveryMethod('digital')}>
+                <Ionicons name="mail" size={28} color="#fff" /><Text style={styles.mBtnTxt}>Email</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.mBtn, deliveryMethod === 'whatsapp' && styles.mBtnActive]} onPress={() => setDeliveryMethod('whatsapp')}>
+                <Ionicons name="logo-whatsapp" size={28} color="#fff" /><Text style={styles.mBtnTxt}>WhatsApp</Text>
+              </TouchableOpacity>
+            </View>
 
-        <View style={styles.totalBox}>
-           <Text style={styles.totalLabel}>Total Amount:</Text>
-           <Text style={styles.totalValue}>R{cartTotal}.00</Text>
-        </View>
+            <View style={styles.totalBox}>
+              <Text style={styles.totalLabel}>Total Amount:</Text>
+              <Text style={styles.totalValue}>R{cartTotal}.00</Text>
+            </View>
 
-        <TouchableOpacity style={styles.checkoutBtn} onPress={() => setCurrentScreen('payment')}>
-          <Text style={styles.checkoutBtnText}>Secure Checkout</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.checkoutBtn} onPress={() => setCurrentScreen('payment')}>
+              <Text style={styles.checkoutBtnText}>Secure Checkout</Text>
+            </TouchableOpacity>
+          </>
+        )}
         <View style={{ height: 160 }} />
       </ScrollView>
       <NavigationBar />
@@ -276,19 +304,19 @@ export default function App() {
     <View style={[styles.flex, { backgroundColor: '#050505' }]}>
       <SafeAreaView style={styles.flex}>
         <View style={styles.profileTop}>
-          <View style={styles.avatarCircle}>
+          <TouchableOpacity onPress={() => handleFeatureAlert('Profile Picture Edit')} style={styles.avatarCircle}>
              <Image source={{ uri: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400" }} style={styles.avatarLarge} />
-          </View>
+          </TouchableOpacity>
           <Text style={styles.profileName}>Kid Of Dynamic</Text>
           <Text style={styles.profileTag}>PLATINUM MEMBER</Text>
         </View>
         <ScrollView style={styles.padding20}>
-           <TouchableOpacity style={styles.pItem}><Ionicons name="ticket-outline" size={22} color={Theme.primary} /><Text style={styles.pItemTxt}>My Tickets</Text></TouchableOpacity>
-           <TouchableOpacity style={styles.pItem}><Ionicons name="card-outline" size={22} color={Theme.primary} /><Text style={styles.pItemTxt}>Payments</Text></TouchableOpacity>
-           <TouchableOpacity style={styles.pItem}><Ionicons name="heart-outline" size={22} color={Theme.primary} /><Text style={styles.pItemTxt}>Liked Events</Text></TouchableOpacity>
-           <TouchableOpacity style={styles.pItem}><Ionicons name="log-out-outline" size={22} color={Theme.red} /><Text style={styles.pItemTxt}>Logout</Text></TouchableOpacity>
+           <TouchableOpacity style={styles.pItem} onPress={() => handleFeatureAlert('My Tickets')}><Ionicons name="ticket-outline" size={22} color={Theme.primary} /><Text style={styles.pItemTxt}>My Tickets</Text></TouchableOpacity>
+           <TouchableOpacity style={styles.pItem} onPress={() => handleFeatureAlert('Payments')}><Ionicons name="card-outline" size={22} color={Theme.primary} /><Text style={styles.pItemTxt}>Payments</Text></TouchableOpacity>
+           <TouchableOpacity style={styles.pItem} onPress={() => handleFeatureAlert('Liked Events')}><Ionicons name="heart-outline" size={22} color={Theme.primary} /><Text style={styles.pItemTxt}>Liked Events</Text></TouchableOpacity>
+           <TouchableOpacity style={styles.pItem} onPress={logout}><Ionicons name="log-out-outline" size={22} color={Theme.red} /><Text style={styles.pItemTxt}>Logout</Text></TouchableOpacity>
            <View style={styles.footerBranding}>
-             <Text style={styles.footerBrandingText}>Built by Kid Of Dynamic 🇿🇦</Text>
+             <Text style={styles.footerBrandingText}>Built with ❤️ by Kid Of Dynamic 🇿🇦</Text>
            </View>
            <View style={{ height: 160 }} />
         </ScrollView>
@@ -333,7 +361,7 @@ const styles = StyleSheet.create({
   cardBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: 'rgba(255,255,255,0.95)', paddingVertical: 5, paddingHorizontal: 12, borderRadius: 10 },
   cardBadgeText: { color: Theme.primary, fontSize: 11, fontWeight: '900' },
   cardBody: { padding: 18 },
-  cardTitle: { fontSize: 18, fontWeight: '900', color: '#111', marginBottom: 12 },
+  cardTitle: { fontSize: 18, fontWeight: '900', color: '#111', marginBottom: 12, lineHeight: 24 }, // Allowed wrapping
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardLocContainer: { flex: 1, flexDirection: 'row', alignItems: 'center', marginRight: 15 },
   cardLocText: { fontSize: 13, color: '#666', fontWeight: '500' },
@@ -349,13 +377,16 @@ const styles = StyleSheet.create({
   backBtnPos: { position: 'absolute', top: 0, left: 20 },
   circleBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', alignItems: 'center', marginTop: 15 },
   detailContent: { flex: 1, backgroundColor: '#000', borderTopLeftRadius: 35, borderTopRightRadius: 35, marginTop: -35, padding: 25 },
-  detailName: { color: '#fff', fontSize: 28, fontWeight: '900', marginBottom: 20 },
+  detailName: { color: '#fff', fontSize: 28, fontWeight: '900', marginBottom: 20, lineHeight: 36 },
   detailRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
   detailMetaText: { color: '#fff', marginLeft: 15, fontSize: 16, fontWeight: '600' },
   detailSecH: { color: Theme.primary, fontSize: 18, fontWeight: '900', marginTop: 25, marginBottom: 12 },
   detailBody: { color: '#BBB', fontSize: 15, lineHeight: 24 },
+  detailShareBox: { marginTop: 20, alignItems: 'center' },
+  shareBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#222', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 15 },
+  shareTxt: { color: '#fff', marginLeft: 10, fontWeight: '700' },
   stickyBar: { position: 'absolute', bottom: 30, left: 20, right: 20 },
-  stickyInner: { backgroundColor: Theme.primary, height: 80, borderRadius: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 25 },
+  stickyInner: { backgroundColor: Theme.primary, height: 80, borderRadius: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 25, ...Shadows.primary },
   stickyPrice: { color: '#fff', fontSize: 24, fontWeight: '900', flex: 1 },
   stickyStepper: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: 5, marginRight: 20 },
   stickyCount: { color: '#fff', paddingHorizontal: 15, fontWeight: '900', fontSize: 18 },
@@ -374,9 +405,13 @@ const styles = StyleSheet.create({
   scTitle: { color: '#fff', fontSize: 24, fontWeight: '900' },
   cartCard: { flexDirection: 'row', backgroundColor: '#1A1A1A', borderRadius: 20, padding: 15, marginBottom: 15 },
   cartCardImg: { width: 70, height: 70, borderRadius: 12 },
-  cartCardContent: { marginLeft: 15, justifyContent: 'center' },
-  cartCardName: { color: '#fff', fontSize: 16, fontWeight: '800' },
+  cartCardContent: { flex: 1, marginLeft: 15, justifyContent: 'center' },
+  cartCardName: { color: '#fff', fontSize: 16, fontWeight: '800', lineHeight: 22 },
   cartCardPrice: { color: Theme.primary, marginTop: 5, fontWeight: '700' },
+  emptyCart: { marginTop: 100, alignItems: 'center' },
+  emptyCartText: { color: '#444', fontSize: 18, marginTop: 20, fontWeight: '700' },
+  contBtn: { backgroundColor: Theme.primary, marginTop: 30, paddingHorizontal: 30, paddingVertical: 12, borderRadius: 25 },
+  contBtnTxt: { color: '#fff', fontWeight: '800' },
   scH2: { color: '#fff', fontSize: 18, fontWeight: '900', marginTop: 25, marginBottom: 15 },
   methodFlex: { flexDirection: 'row', justifyContent: 'space-between' },
   mBtn: { flex: 1, backgroundColor: '#1A1A1A', padding: 20, borderRadius: 15, marginHorizontal: 5, alignItems: 'center', borderWidth: 2, borderColor: 'transparent' },
