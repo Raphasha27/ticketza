@@ -12,17 +12,34 @@ Ticketza is a centralized event ticketing platform designed for the South Africa
 - **Checkout Options**: Choose your preferred receiving method (**Email** or **WhatsApp**).
 - **Profile Management**: Track loyalty points and manage digital tickets.
 
-## 📊 My Digital Footprint
+## 📊 My Digital Footprint - Kid Of Dynamic
+<p align="center">
+  <img src="https://github-profile-trophy.vercel.app/?username=Raphasha27&theme=radical&no-bg=true&no-frame=true&column=4" alt="Trophies" />
+</p>
+
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=vue-dark&hide_border=true&bg_color=00000000&title_color=7F00FF&icon_color=FF00FF&text_color=FFFFFF" alt="Stats" width="400" />
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=vue-dark&hide_border=true&bg_color=00000000&title_color=7F00FF&text_color=FFFFFF" alt="Langs" width="300" />
 </p>
+
 <p align="center">
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=vue-dark&hide_border=true&background=00000000&stroke=7F00FF&ring=FF00FF&fire=FF00FF&currStreakNum=FFFFFF" alt="Streak" width="710" />
 </p>
 
+## 🛠️ Tech Stack & Languages
+<p align="center">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+</p>
+
 ## 🖼️ App Preview
 Check out the latest screenshots of the mobile experience:
+
 
 | Home Screen | Search & Vibes | Event Details | Cart & Checkout | Profile | Success |
 | :---: | :---: | :---: | :---: | :---: | :---: |
