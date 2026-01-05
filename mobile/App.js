@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   bookBtnText: { color: '#fff', fontWeight: '800' },
   offlineBanner: { backgroundColor: '#333', padding: 8, borderRadius: 10, alignItems: 'center', marginBottom: 20 },
   offlineText: { color: '#fff', fontWeight: '700', fontSize: 12 },
-  navBarWrapper: { position: 'absolute', bottom: 30, left: 20, right: 20 },
+  navBarWrapper: { position: 'absolute', bottom: 45, left: 20, right: 20 },
   navBar: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 25, height: 70, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 25, elevation: 15, paddingHorizontal: 20 },
   navItem: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   navText: { fontSize: 11, fontWeight: '700', color: '#666', marginTop: 4 },
