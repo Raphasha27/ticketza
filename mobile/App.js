@@ -11,7 +11,7 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cart, setCart] = useState({});
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [deliveryMethod, setDeliveryMethod] = useState('digital'); // 'digital' or 'whatsapp'
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -56,7 +56,6 @@ export default function App() {
       setEvents(formattedEvents);
       setError(null);
     } catch (err) {
-      console.log('Using fallback data');
       setError('Mode: Offline');
       setEvents([
         { id: 1, name: 'Soweto Derby: Chiefs vs Pirates', date: '2026-02-15', time: '15:30', venue: 'FNB Stadium, Johannesburg', image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800', price: 150, category: 'Sports', description: 'Experience the Calabash roaring with the biggest rivalry in African football.', organizer: 'PSL Official' },
@@ -266,6 +265,24 @@ export default function App() {
               </View>
             ))}
 
+            <Text style={styles.optionsHeading}>Receiving Method</Text>
+            <View style={styles.optionsRow}>
+              <TouchableOpacity 
+                style={[styles.optionItem, deliveryMethod === 'digital' && styles.optionItemSelected]} 
+                onPress={() => setDeliveryMethod('digital')}
+              >
+                <Ionicons name="mail" size={20} color={deliveryMethod === 'digital' ? '#7F00FF' : '#666'} />
+                <Text style={[styles.optionText, deliveryMethod === 'digital' && styles.optionTextSelected]}>Email</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.optionItem, deliveryMethod === 'whatsapp' && styles.optionItemSelected]} 
+                onPress={() => setDeliveryMethod('whatsapp')}
+              >
+                <Ionicons name="logo-whatsapp" size={20} color={deliveryMethod === 'whatsapp' ? '#25D366' : '#666'} />
+                <Text style={[styles.optionText, deliveryMethod === 'whatsapp' && styles.optionTextSelected]}>WhatsApp</Text>
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.summaryCard}>
               <View style={styles.summaryRow}><Text style={styles.summaryLabel}>Subtotal</Text><Text style={styles.summaryValue}>R{getTotalAmount()}</Text></View>
               <View style={styles.summaryRow}><Text style={styles.summaryLabel}>Service Fee (5%)</Text><Text style={styles.summaryValue}>R{(getTotalAmount() * 0.05).toFixed(2)}</Text></View>
@@ -278,7 +295,7 @@ export default function App() {
             <TouchableOpacity style={styles.checkoutBtn} onPress={() => setCurrentScreen('payment')}>
               <Text style={styles.checkoutBtnText}>Secure Checkout</Text>
             </TouchableOpacity>
-            <View style={{ height: 100 }} />
+            <View style={{ height: 150 }} />
           </ScrollView>
         )}
         <NavigationBar />
@@ -310,7 +327,7 @@ export default function App() {
           <TouchableOpacity style={styles.profileRow}><Ionicons name="settings" size={22} color="#7F00FF" /><Text style={styles.profileRowText}>Preferences</Text><Ionicons name="chevron-forward" size={18} color="#ccc" /></TouchableOpacity>
 
           <TouchableOpacity style={[styles.profileRow, { marginTop: 40 }]}><Ionicons name="log-out-outline" size={22} color="#FF3B30" /><Text style={[styles.profileRowText, { color: '#FF3B30' }]}>Sign Out</Text></TouchableOpacity>
-          <View style={{ height: 120 }} />
+          <View style={{ height: 150 }} />
        </ScrollView>
        <NavigationBar />
     </SafeAreaView>
@@ -355,12 +372,12 @@ const styles = StyleSheet.create({
   bookBtnText: { color: '#fff', fontWeight: '800' },
   offlineBanner: { backgroundColor: '#333', padding: 8, borderRadius: 10, alignItems: 'center', marginBottom: 20 },
   offlineText: { color: '#fff', fontWeight: '700', fontSize: 12 },
-  navBarWrapper: { position: 'absolute', bottom: 45, left: 20, right: 20 },
-  navBar: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 25, height: 70, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 25, elevation: 15, paddingHorizontal: 20 },
+  navBarWrapper: { position: 'absolute', bottom: 70, left: 20, right: 20 },
+  navBar: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 25, height: 75, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 25, elevation: 15, paddingHorizontal: 20 },
   navItem: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   navText: { fontSize: 11, fontWeight: '700', color: '#666', marginTop: 4 },
   navTextActive: { color: '#7F00FF' },
-  cartBadge: { position: 'absolute', top: 10, left: width*0.58, backgroundColor: '#FF3B30', width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center', borderSize: 2, borderColor: '#fff' },
+  cartBadge: { position: 'absolute', top: 12, left: width*0.58, backgroundColor: '#FF3B30', width: 22, height: 22, borderRadius: 11, justifyContent: 'center', alignItems: 'center', borderSize: 2, borderColor: '#fff' },
   cartBadgeText: { color: '#fff', fontSize: 11, fontWeight: 'bold' },
   detailHeroImage: { width: '100%', height: 450 },
   detailHeaderOverlap: { position: 'absolute', top: 0, left: 0, right: 0, padding: 20, paddingTop: 50 },
@@ -393,6 +410,12 @@ const styles = StyleSheet.create({
   cartStepRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' },
   cartStepBtn: { width: 32, height: 32, borderRadius: 8, backgroundColor: '#F0F0F0', justifyContent: 'center', alignItems: 'center' },
   cartStepValue: { marginHorizontal: 15, fontWeight: '800', fontSize: 16 },
+  optionsHeading: { fontSize: 18, fontWeight: '800', marginBottom: 15, marginTop: 10 },
+  optionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
+  optionItem: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', padding: 15, borderRadius: 15, marginHorizontal: 5, borderWidth: 2, borderColor: 'transparent' },
+  optionItemSelected: { borderColor: '#7F00FF', backgroundColor: '#F9F5FF' },
+  optionText: { marginLeft: 10, fontWeight: '700', color: '#666' },
+  optionTextSelected: { color: '#7F00FF' },
   summaryCard: { backgroundColor: '#fff', borderRadius: 25, padding: 25, marginTop: 10 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   summaryLabel: { color: '#777', fontWeight: '600' },

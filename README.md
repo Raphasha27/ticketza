@@ -1,57 +1,45 @@
-# Ticketza 🇿🇦
+# Ticketza 🇿🇦 (Expo Mobile Application)
 
-Ticketza is a centralized event ticketing platform designed for the South African market. It allows event organizers to list events, users to browse and select seats in real-time, processes payments, and issues digital QR tickets for venue entry.
+Ticketza is a centralized event ticketing platform designed for the South African market. This repository contains the **high-performance mobile application** built using the **Expo (React Native)** framework.
 
-## 📱 Mobile App (React Native Expo)
-The mobile version of Ticketza is built for on-the-go event discovery and instant ticket access.
+## 📱 Mobile App Features
+- **Expo SDK 50+**: Optimized for the latest mobile features and performance.
+- **Premium Mzansi Design**: Modern, glassmorphic UI with South African flair (Linear Gradients, HSL colors).
+- **Dynamic Content**: Fetches real-time events from a FastAPI backend.
+- **Advanced Cart Logic**: Manage multiple bookings with real-time tax/fee calculation.
+- **Checkout Options**: Choose your preferred receiving method (**Email** or **WhatsApp**).
+- **Profile Management**: Track loyalty points and manage digital tickets.
 
-### Features
-- **Real-time Discovery**: Syncs directly with the FastAPI backend.
-- **Premium UI**: Modern, glassmorphic design optimized for Android & iOS.
-- **Cart & Checkout**: Full shopping bag experience with South African payment methods (PayFast, SnapScan, Ozow).
-- **Digital Tickets**: Offline-ready QR codes for scanning at entrance.
-- **Offline Reliability**: Built-in fallback mode ensures the app works even with poor connectivity.
+## 🖼️ App Preview
+Check out the latest screenshots of the mobile experience:
 
-### How to Run (Local)
-1. **Prerequisites**: [Expo Go](https://expo.dev/go) installed on your physical device.
-2. **Terminal 1 (Backend)**:
-   ```bash
-   # Bind to 0.0.0.0 to allow mobile connection
-   run_backend.bat
-   ```
-3. **Terminal 2 (Mobile)**:
+| Home Screen | Event Details | Cart & Checkout | Profile |
+| :---: | :---: | :---: | :---: |
+| ![Home](./screenshots/home.png) | ![Detail](./screenshots/detail.png) | ![Cart](./screenshots/cart.png) | ![Profile](./screenshots/profile.png) |
+
+## 🚀 Getting Started (Mobile)
+
+1. **Install Expo Go**: Download the [Expo Go](https://expo.dev/go) app on your Android or iOS device.
+2. **Setup PC**: Ensure your phone and PC are on the same Wi-Fi network.
+3. **Start the App**:
    ```bash
    cd mobile
    npx expo start --lan
    ```
-4. **Scan**: Use Expo Go to scan the QR code (ensure phone and PC are on the same Wi-Fi).
+4. **Scan**: Open Expo Go and scan the QR code in your terminal.
 
 ---
 
-## 🏗️ Technical Stack
-- **Web Frontend**: Next.js 16 (React), Tailwind CSS, Framer Motion.
-- **Mobile App**: React Native Expo, Ionicons, Linear Gradients.
-- **Backend API**: FastAPI (Python 3.10+), Pydantic.
-- **Database**: 
-  - **Development**: SQLite (`ticketza.db`) for zero-configuration setup.
-  - **Production**: PostgreSQL.
-- **Real-time**: WebSockets for seat map synchronization.
-
-## 👥 User Roles
-1. **Customer**: Browse events, book seats, pay, view digital tickets.
-2. **Event Organizer**: Create events, manage venues, monitor real-time sales.
-3. **Admin**: Platform governance, fraud monitoring, venue approval.
-
-## 🚀 Phase Status
-- [x] **Phase 1: Foundation**: Auth, Events CRUD, Basic Booking.
-- [x] **Phase 2: Mobile Integration**: React Native app with real-time API sync.
-- [x] **Phase 3: Database & Local**: Migrated to easy-run SQLite with SA data seeding.
-- [ ] **Phase 4: Advanced Locking**: Implementation of Redis-based seat locking.
+## 🏗️ Architecture
+- **Framework**: React Native with Expo.
+- **Icons**: @expo/vector-icons (Ionicons).
+- **Animations**: Expo Linear Gradient & native transitions.
+- **Backend**: FastAPI (Python) with SQLite.
 
 ## 🎮 Access Points
 - **Web Interface**: `http://localhost:3000`
-- **API Documentation**: `http://localhost:8000/docs`
-- **Mobile Dev Server**: `http://localhost:8081`
+- **Mobile Server**: `http://localhost:8081`
+- **API Docs**: `http://localhost:8000/docs`
 
 ---
-*Built with ❤️ for South African Entertainment.*
+*Built with ❤️ by Antigravity for the Ticketza Platform.*
