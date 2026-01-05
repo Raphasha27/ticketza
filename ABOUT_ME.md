@@ -5,11 +5,14 @@
 
 ## 📊 My Digital Footprint
 
-[![Raphasha's GitHub stats](https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=radical)](https://github.com/anuraghazra/github-readme-stats)
+### GitHub Statistics
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=dark)
 
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=radical)](https://github.com/anuraghazra/github-readme-stats)
+### Top Languages
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=dark)
 
-[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=radical)](https://git.io/streak-stats)
+### Contribution Streak
+![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=dark)
 
 ---
 
