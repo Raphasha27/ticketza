@@ -37,6 +37,27 @@ const Theme = {
   shadow: 'rgba(0,0,0,0.1)'
 };
 
+const Shadows = {
+  light: {
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 8
+  },
+  medium: {
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 15,
+    elevation: 12
+  },
+  primary: {
+    shadowColor: '#7F00FF',
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15
+  }
+};
+
 const MOCK_EVENTS = [
   { 
     id: 1, 
@@ -355,19 +376,19 @@ const styles = StyleSheet.create({
   avatarMini: { width: 36, height: 36, borderRadius: 18, borderSize: 2, borderColor: 'rgba(255,255,255,0.4)' },
   scrollView: { flex: 1, paddingHorizontal: 25 },
   pageTitle: { fontSize: 22, fontWeight: '900', color: '#111', marginVertical: 20 },
-  card: { backgroundColor: '#fff', borderRadius: 25, marginBottom: 25, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 15, elevation: 8, overflow: 'hidden' },
+  card: { backgroundColor: '#fff', borderRadius: 25, marginBottom: 25, ...Shadows.light, overflow: 'hidden' },
   cardImgContainer: { height: 200, width: '100%', position: 'relative' },
   cardImg: { width: '100%', height: '100%' },
   cardBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: 'rgba(255,255,255,0.95)', paddingVertical: 5, paddingHorizontal: 12, borderRadius: 10 },
   cardBadgeText: { color: Theme.primary, fontSize: 11, fontWeight: '900' },
   cardBody: { padding: 18 },
-  cardTitle: { fontSize: 18, fontWeight: '900', color: '#111', marginBottom: 12, lineHeight: 24 }, // Allowed wrapping
+  cardTitle: { fontSize: 18, fontWeight: '900', color: '#111', marginBottom: 12, lineHeight: 24 }, 
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardLocContainer: { flex: 1, flexDirection: 'row', alignItems: 'center', marginRight: 15 },
   cardLocText: { fontSize: 13, color: '#666', fontWeight: '500' },
   cardPriceText: { fontSize: 20, fontWeight: '900', color: Theme.primary },
   navContainer: { position: 'absolute', bottom: 35, left: 20, right: 20 },
-  navInner: { flexDirection: 'row', backgroundColor: '#fff', height: 75, borderRadius: 37, elevation: 25, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 20, paddingHorizontal: 20 },
+  navInner: { flexDirection: 'row', backgroundColor: '#fff', height: 75, borderRadius: 37, ...Shadows.medium, paddingHorizontal: 20 },
   navBtn: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   navBtnText: { fontSize: 10, color: Theme.textMuted, marginTop: 4, fontWeight: '800' },
   navBtnTextActive: { color: Theme.primary },
