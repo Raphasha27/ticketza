@@ -12,12 +12,22 @@ Ticketza is a centralized event ticketing platform designed for the South Africa
 - **Checkout Options**: Choose your preferred receiving method (**Email** or **WhatsApp**).
 - **Profile Management**: Track loyalty points and manage digital tickets.
 
+## 📊 My Digital Footprint
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Raphasha27&show_icons=true&theme=vue-dark&hide_border=true&bg_color=00000000&title_color=7F00FF&icon_color=FF00FF&text_color=FFFFFF" alt="Stats" width="400" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Raphasha27&layout=compact&theme=vue-dark&hide_border=true&bg_color=00000000&title_color=7F00FF&text_color=FFFFFF" alt="Langs" width="300" />
+</p>
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Raphasha27&theme=vue-dark&hide_border=true&background=00000000&stroke=7F00FF&ring=FF00FF&fire=FF00FF&currStreakNum=FFFFFF" alt="Streak" width="710" />
+</p>
+
 ## 🖼️ App Preview
 Check out the latest screenshots of the mobile experience:
 
-| Home Screen | Event Details | Cart & Checkout | Profile |
-| :---: | :---: | :---: | :---: |
-| ![Home](./screenshots/home.png) | ![Detail](./screenshots/detail.png) | ![Cart](./screenshots/cart.png) | ![Profile](./screenshots/profile.png) |
+| Home Screen | Search & Vibes | Event Details | Cart & Checkout | Profile | Success |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ![Home](./screenshots/home.png) | ![Search](./screenshots/search.png) | ![Detail](./screenshots/detail.png) | ![Cart](./screenshots/cart.png) | ![Profile](./screenshots/profile.png) | ![Success](./screenshots/success.png) |
+
 
 ## 🚀 Getting Started (Mobile)
 
