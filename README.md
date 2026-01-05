@@ -1,6 +1,8 @@
 # Ticketza 🇿🇦 (Expo Mobile Application)
+[![About Me](https://img.shields.io/badge/About_Me-Kid_Of_Dynamic-7F00FF?style=for-the-badge&logo=github)](./ABOUT_ME.md)
 
 Ticketza is a centralized event ticketing platform designed for the South African market. This repository contains the **high-performance mobile application** built using the **Expo (React Native)** framework.
+
 
 ## 📱 Mobile App Features
 - **Expo SDK 50+**: Optimized for the latest mobile features and performance.
