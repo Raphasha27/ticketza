@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput, SafeAreaView, ActivityIndicator, Dimensions, Platform, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput, SafeAreaView, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+
+// Organized Imports
+import { Colors, Spacing, Shadows } from './src/constants/theme';
+import { FALLBACK_EVENTS } from './src/data/fallback';
 
 const { width, height } = Dimensions.get('window');
 const API_BASE_URL = 'http://192.168.18.65:8000';
 
 export default function App() {
+  // --- State Management ---
   const [currentScreen, setCurrentScreen] = useState('home');
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [cart, setCart] = useState({});
@@ -24,10 +29,12 @@ export default function App() {
     loyaltyPoints: 1250,
   });
 
+  // --- Effects ---
   useEffect(() => {
     fetchEvents();
   }, []);
 
+  // --- API Methods ---
   const fetchEvents = async () => {
     try {
       setIsLoading(true);
@@ -35,8 +42,10 @@ export default function App() {
       const timeoutId = setTimeout(() => controller.abort(), 8000);
       const response = await fetch(`${API_BASE_URL}/api/v1/events/`, { signal: controller.signal });
       clearTimeout(timeoutId);
+      
       if (!response.ok) throw new Error('Failed to fetch');
       const data = await response.json();
+      
       const formattedEvents = data.map(event => ({
         id: event.id,
         name: event.title,
@@ -45,23 +54,19 @@ export default function App() {
         image: event.image_url || `https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&sig=${event.id}`,
         price: 350,
         category: 'Concert',
-        description: event.description || 'Welcome to the most anticipated show of the year. Experience world-class talent and production right here in Mzansi.',
+        description: event.description || 'Welcome to the most anticipated show of the year.',
       }));
       setEvents(formattedEvents);
       setError(null);
     } catch (err) {
       setError('Offline');
-      setEvents([
-        { id: 1, name: 'Coldplay: Music of the Spheres', venue: 'Wembley Stadium', date: 'Oct 26-28, 2026', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800', price: 1100, category: 'Music' },
-        { id: 2, name: 'NBA Finals: Lakers vs Celtics', venue: 'Crypto.com Arena', date: 'Jun 14, 2026', image: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=800', price: 2500, category: 'Sports' },
-        { id: 3, name: 'The Lion King Musical', venue: 'Lyceum Theatre', date: 'Daily Show', image: 'https://images.unsplash.com/photo-1503095396549-80705a6207a2?w=800', price: 850, category: 'Musical' },
-        { id: 4, name: 'Black Coffee H2O', venue: 'Wild Waters', date: 'Feb 15, 2026', image: 'https://images.unsplash.com/photo-1514525253361-bee8718a74a1?w=800', price: 450, category: 'Electronic' }
-      ]);
+      setEvents(FALLBACK_EVENTS);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // --- Cart Helpers ---
   const updateCart = (eventId, delta) => {
     setCart(prev => {
       const newCount = (prev[eventId] || 0) + delta;
@@ -73,109 +78,114 @@ export default function App() {
     });
   };
 
-  const getTotalAmount = () => Object.entries(cart).reduce((total, [id, count]) => {
-    const event = events.find(e => e.id === parseInt(id));
-    return total + (event?.price || 0) * count;
-  }, 0);
+  const cartItems = Object.entries(cart).map(([id, count]) => ({
+    event: events.find(e => e.id === parseInt(id)),
+    count
+  })).filter(i => i.event);
 
-  const getTotalTicketsCount = () => Object.values(cart).reduce((a, b) => a + b, 0);
+  const totalAmount = cartItems.reduce((acc, item) => acc + (item.event.price * item.count), 0);
+  const totalTickets = Object.values(cart).reduce((a, b) => a + b, 0);
 
-  // --- Nav Bar ---
+  // --- Shared Components ---
+  const NavButton = ({ screen, icon, label, badge = 0 }) => {
+    const active = currentScreen === screen;
+    return (
+      <TouchableOpacity style={styles.navBtn} onPress={() => setCurrentScreen(screen)}>
+        <View>
+          <Ionicons name={active ? icon : `${icon}-outline`} size={24} color={active ? Colors.primary : Colors.textMuted} />
+          {badge > 0 && (
+            <View style={styles.badgeContainer}>
+              <Text style={styles.badgeText}>{badge}</Text>
+            </View>
+          )}
+        </View>
+        <Text style={[styles.navBtnText, active && styles.navBtnTextActive]}>{label}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const NavigationBar = () => (
-    <View style={styles.navContainer}>
-      <View style={styles.navInner}>
-        <NavButton screen="home" icon="home" label="Home" active={currentScreen === 'home'} />
-        <NavButton screen="search" icon="search" label="Search" active={currentScreen === 'search'} />
-        <NavButton screen="cart" icon="cart" label="Cart" active={currentScreen === 'cart'} badge={getTotalTicketsCount()} />
-        <NavButton screen="profile" icon="person" label="Profile" active={currentScreen === 'profile'} />
+    <View style={styles.navWrapper}>
+      <View style={styles.navContent}>
+        <NavButton screen="home" icon="home" label="Home" />
+        <NavButton screen="search" icon="search" label="Search" />
+        <NavButton screen="cart" icon="cart" label="Cart" badge={totalTickets} />
+        <NavButton screen="profile" icon="person" label="Profile" />
       </View>
     </View>
   );
 
-  const NavButton = ({ screen, icon, label, active, badge }) => (
-    <TouchableOpacity style={styles.navBtn} onPress={() => setCurrentScreen(screen)}>
-      <View>
-        <Ionicons name={active ? icon : `${icon}-outline`} size={24} color={active ? "#7F00FF" : "#999"} />
-        {badge > 0 && <View style={styles.cartBadgeSmall}><Text style={styles.cartBadgeTextSmall}>{badge}</Text></View>}
-      </View>
-      <Text style={[styles.navText, active && styles.navTextActive]}>{label}</Text>
-    </TouchableOpacity>
-  );
+  // --- Screen Renderers ---
 
-  // --- Screens ---
-
-  const HomeScreen = () => (
-    <View style={styles.screen}>
-      <LinearGradient colors={['#A020F0', '#FF00FF']} start={{x:0, y:0}} end={{x:1, y:0}} style={styles.homeHeader}>
+  const renderHome = () => (
+    <View style={styles.flexContainer}>
+      <LinearGradient colors={[Colors.accent, Colors.secondary]} start={{x:0, y:0}} end={{x:1, y:0}} style={styles.headerGradient}>
         <SafeAreaView>
-          <View style={styles.headerContent}>
-            <Text style={styles.logoText}>Ticketza</Text>
-            <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.headerIcon} onPress={() => setCurrentScreen('search')}><Ionicons name="search" size={24} color="#fff" /></TouchableOpacity>
+          <View style={styles.topHeader}>
+            <Text style={styles.logo}>Ticketza</Text>
+            <View style={styles.headerActions}>
+              <TouchableOpacity style={styles.searchIcon} onPress={() => setCurrentScreen('search')}><Ionicons name="search" size={24} color={Colors.white} /></TouchableOpacity>
               <TouchableOpacity onPress={() => setCurrentScreen('profile')}><Image source={{ uri: userProfile.avatar }} style={styles.headerAvatar} /></TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>
       </LinearGradient>
 
-      <ScrollView style={styles.homeContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.sectionHeading}>South Africa's Finest 🇿🇦</Text>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <Text style={styles.sectionTitle}>South Africa's Finest 🇿🇦</Text>
         {isLoading ? (
-          <ActivityIndicator size="large" color="#7F00FF" style={{ marginTop: 50 }} />
+          <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 50 }} />
         ) : (
           events.map(event => (
-            <TouchableOpacity key={event.id} style={styles.eventCardFull} onPress={() => { setSelectedEvent(event); setCurrentScreen('detail'); }}>
-              <Image source={{ uri: event.image }} style={styles.eventCardImageFull} />
-              <View style={styles.cardCategoryBadge}><Text style={styles.cardCategoryText}>{event.category}</Text></View>
-              <View style={styles.eventCardBodyFull}>
-                <Text style={styles.eventCardTitleFull}>{event.name}</Text>
-                <View style={styles.eventCardMetaRow}>
-                  <Text style={styles.eventCardLocFull}><Ionicons name="location-outline" size={14} /> {event.venue}</Text>
-                  <Text style={styles.eventCardPriceFull}>R{event.price}</Text>
+            <TouchableOpacity key={event.id} style={styles.eventCard} onPress={() => { setSelectedEvent(event); setCurrentScreen('detail'); }}>
+              <Image source={{ uri: event.image }} style={styles.eventCardImage} />
+              <View style={styles.categoryBadge}><Text style={styles.categoryText}>{event.category}</Text></View>
+              <View style={styles.eventCardBody}>
+                <Text style={styles.eventName}>{event.name}</Text>
+                <View style={styles.eventMeta}>
+                  <Text style={styles.eventVenue}><Ionicons name="location-outline" size={14} /> {event.venue}</Text>
+                  <Text style={styles.eventPrice}>R{event.price}</Text>
                 </View>
               </View>
             </TouchableOpacity>
           ))
         )}
-        <View style={{ height: 150 }} />
+        <View style={{ height: 160 }} />
       </ScrollView>
       <NavigationBar />
     </View>
   );
 
-  const SearchScreen = () => (
-    <View style={[styles.screen, { backgroundColor: '#121212' }]}>
+  const renderSearch = () => (
+    <View style={[styles.flexContainer, { backgroundColor: Colors.darkBg }]}>
       <SafeAreaView>
         <View style={styles.searchHeader}>
-          <View style={styles.searchBarContainer}>
-            <Ionicons name="search" size={20} color="#999" />
+          <View style={styles.searchBox}>
+            <Ionicons name="search" size={20} color={Colors.textMuted} />
             <TextInput 
-              placeholder="Artists, venues, or vibes..." 
-              placeholderTextColor="#666" 
-              style={styles.searchBarInput} 
-              autoFocus={true}
+              placeholder="Events, artists, venues..." 
+              placeholderTextColor={Colors.textSecondary} 
+              style={styles.searchTextInput} 
+              autoFocus
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
           </View>
-          <TouchableOpacity onPress={() => setCurrentScreen('home')}><Text style={{ color: '#7F00FF', fontWeight: '800' }}>Cancel</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => setCurrentScreen('home')}><Text style={styles.cancelLink}>Cancel</Text></TouchableOpacity>
         </View>
       </SafeAreaView>
-
-      <ScrollView style={{ padding: 20 }}>
-        <Text style={styles.searchSectionTitle}>Trending Today</Text>
+      <ScrollView style={styles.padding20}>
+        <Text style={styles.searchHeading}>Trending Vibes</Text>
         {['Jazz In Jozie', 'Soweto Derby', 'Cape Town Jazz', 'Amapiano Live'].map((trend, i) => (
-          <TouchableOpacity key={i} style={styles.trendingRow}>
-            <Ionicons name="trending-up" size={18} color="#7F00FF" />
-            <Text style={styles.trendingText}>{trend}</Text>
+          <TouchableOpacity key={i} style={styles.trendRow}>
+            <Ionicons name="trending-up" size={18} color={Colors.primary} />
+            <Text style={styles.trendText}>{trend}</Text>
           </TouchableOpacity>
         ))}
-        <Text style={[styles.searchSectionTitle, { marginTop: 30 }]}>Categories</Text>
-        <View style={styles.categoryGrid}>
+        <Text style={[styles.searchHeading, { marginTop: 30 }]}>By Category</Text>
+        <View style={styles.grid}>
           {['Music', 'Sports', 'Comedy', 'Theater', 'Festivals', 'Virtual'].map((cat, i) => (
-            <TouchableOpacity key={i} style={styles.categoryGridItem}>
-              <Text style={styles.categoryGridText}>{cat}</Text>
-            </TouchableOpacity>
+            <TouchableOpacity key={i} style={styles.gridItem}><Text style={styles.gridText}>{cat}</Text></TouchableOpacity>
           ))}
         </View>
       </ScrollView>
@@ -183,267 +193,215 @@ export default function App() {
     </View>
   );
 
-  const DetailScreen = () => (
-    <View style={[styles.screen, { backgroundColor: '#000' }]}>
-      <Image source={{ uri: selectedEvent?.image }} style={styles.detailHeroFull} />
-      <SafeAreaView style={styles.detailBackContainer}>
-        <TouchableOpacity style={styles.detailCircleBack} onPress={() => setCurrentScreen('home')}>
-          <Ionicons name="chevron-back" size={20} color="#fff" />
-        </TouchableOpacity>
-      </SafeAreaView>
-
-      <View style={styles.detailBodyDark}>
+  const renderDetail = () => (
+    <View style={[styles.flexContainer, { backgroundColor: Colors.black }]}>
+      <Image source={{ uri: selectedEvent?.image }} style={styles.heroImage} />
+      <SafeAreaView style={styles.backBtnPos}><TouchableOpacity style={styles.circleBack} onPress={() => setCurrentScreen('home')}><Ionicons name="chevron-back" size={20} color={Colors.white} /></TouchableOpacity></SafeAreaView>
+      <View style={styles.detailSheet}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.detailNameFull}>{selectedEvent?.name}</Text>
-          <View style={styles.detailMetaRowFull}>
-            <Ionicons name="calendar-outline" size={20} color="#7F00FF" />
-            <Text style={styles.detailMetaTextFull}>{selectedEvent?.date}</Text>
-          </View>
-          <View style={styles.detailMetaRowFull}>
-            <Ionicons name="location-outline" size={20} color="#7F00FF" />
-            <Text style={styles.detailMetaTextFull}>{selectedEvent?.venue}</Text>
-          </View>
-          <Text style={styles.detailAboutHeader}>Description</Text>
-          <Text style={styles.detailAboutBody}>{selectedEvent?.description}</Text>
+          <Text style={styles.detailTitle}>{selectedEvent?.name}</Text>
+          <View style={styles.metaRow}><Ionicons name="calendar-outline" size={20} color={Colors.primary} /><Text style={styles.metaLabel}>{selectedEvent?.date}</Text></View>
+          <View style={styles.metaRow}><Ionicons name="location-outline" size={20} color={Colors.primary} /><Text style={styles.metaLabel}>{selectedEvent?.venue}</Text></View>
+          <Text style={styles.aboutHeader}>Description</Text>
+          <Text style={styles.aboutBody}>{selectedEvent?.description}</Text>
           <View style={{ height: 200 }} />
         </ScrollView>
       </View>
-
-      <View style={styles.bottomPayBar}>
-        <View style={styles.bottomPayInner}>
-          <Text style={styles.bottomPrice}>R{selectedEvent?.price}</Text>
-          <View style={styles.bottomQuantity}>
-            <TouchableOpacity style={styles.bottomQBtn} onPress={() => updateCart(selectedEvent.id, -1)}><Ionicons name="remove" size={20} color="#fff" /></TouchableOpacity>
-            <Text style={styles.bottomQText}>{cart[selectedEvent.id] || 0}</Text>
-            <TouchableOpacity style={styles.bottomQBtn} onPress={() => updateCart(selectedEvent.id, 1)}><Ionicons name="add" size={20} color="#fff" /></TouchableOpacity>
+      <View style={styles.payBarWrapper}>
+        <View style={styles.payBarContainer}>
+          <Text style={styles.payPrice}>R{selectedEvent?.price}</Text>
+          <View style={styles.stepperContainer}>
+            <TouchableOpacity onPress={() => updateCart(selectedEvent.id, -1)}><Ionicons name="remove" size={20} color={Colors.white} /></TouchableOpacity>
+            <Text style={styles.stepperVal}>{cart[selectedEvent.id] || 0}</Text>
+            <TouchableOpacity onPress={() => updateCart(selectedEvent.id, 1)}><Ionicons name="add" size={20} color={Colors.white} /></TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.bottomBuyBtn} onPress={() => setCurrentScreen('cart')}>
-            <Text style={styles.bottomBuyText}>Buy Tickets</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.buyBtn} onPress={() => setCurrentScreen('cart')}><Text style={styles.buyBtnText}>Get Tickets</Text></TouchableOpacity>
         </View>
       </View>
     </View>
   );
 
-  const CartScreen = () => {
-    const items = Object.entries(cart).map(([id, count]) => ({
-      event: events.find(e => e.id === parseInt(id)),
-      count
-    })).filter(i => i.event);
-
-    return (
-      <View style={[styles.screen, { backgroundColor: '#121212' }]}>
-        <SafeAreaView>
-          <View style={styles.cartHeaderFull}>
-            <TouchableOpacity onPress={() => setCurrentScreen('home')}><Ionicons name="chevron-back" size={24} color="#fff" /></TouchableOpacity>
-            <Text style={styles.cartHeaderTitleFull}>Shopping Cart</Text>
-            <Ionicons name="person-circle-outline" size={32} color="#fff" />
+  const renderCart = () => (
+    <View style={[styles.flexContainer, { backgroundColor: Colors.darkBg }]}>
+      <SafeAreaView><View style={styles.cartHeader}><TouchableOpacity onPress={() => setCurrentScreen('home')}><Ionicons name="chevron-back" size={24} color={Colors.white} /></TouchableOpacity><Text style={styles.cartHeaderTitle}>Shopping Cart</Text><Ionicons name="person-circle-outline" size={32} color={Colors.white} /></View></SafeAreaView>
+      <ScrollView style={styles.padding20}>
+        {cartItems.map(item => (
+          <View key={item.event.id} style={styles.cartItem}>
+            <Image source={{ uri: item.event.image }} style={styles.cartItemImg} />
+            <View style={styles.cartItemInfo}><Text style={styles.cartItemName}>{item.event.name}</Text><Text style={styles.cartItemMeta}>General • {item.event.date}</Text><Text style={styles.cartItemPrice}>R{item.event.price}</Text></View>
+            <View style={styles.cartItemStepper}><TouchableOpacity onPress={() => updateCart(item.event.id, -1)}><Ionicons name="remove-circle-outline" size={22} color={Colors.textSecondary} /></TouchableOpacity><Text style={styles.cartItemCount}>{item.count}</Text><TouchableOpacity onPress={() => updateCart(item.event.id, 1)}><Ionicons name="add-circle-outline" size={22} color={Colors.textSecondary} /></TouchableOpacity></View>
           </View>
-        </SafeAreaView>
-
-        <ScrollView style={styles.cartScrollFull}>
-          {items.map(item => (
-            <View key={item.event.id} style={styles.cartCardItem}>
-              <Image source={{ uri: item.event.image }} style={styles.cartCardImg} />
-              <View style={styles.cartCardInfo}>
-                <Text style={styles.cartCardName}>{item.event.name}</Text>
-                <Text style={styles.cartCardSub}>General Ticket • {item.event.date}</Text>
-                <Text style={styles.cartCardPrice}>R{item.event.price}</Text>
-              </View>
-              <View style={styles.cartCardStepper}>
-                <TouchableOpacity onPress={() => updateCart(item.event.id, -1)}><Ionicons name="remove-circle-outline" size={22} color="#666" /></TouchableOpacity>
-                <Text style={styles.cartCardCount}>{item.count}</Text>
-                <TouchableOpacity onPress={() => updateCart(item.event.id, 1)}><Ionicons name="add-circle-outline" size={22} color="#666" /></TouchableOpacity>
-              </View>
-            </View>
-          ))}
-
-          <Text style={styles.cartH2}>Receiving Method</Text>
-          <View style={styles.methodFlexRow}>
-            <TouchableOpacity style={[styles.selMethod, deliveryMethod === 'digital' && styles.selMethodActive]} onPress={() => setDeliveryMethod('digital')}>
-              <Ionicons name="mail" size={32} color={deliveryMethod === 'digital' ? '#7F00FF' : '#555'} />
-              <Text style={[styles.selText, deliveryMethod === 'digital' && styles.selTextActive]}>Email</Text>
-              {deliveryMethod === 'digital' && <View style={styles.dotCheck} />}
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.selMethod, deliveryMethod === 'whatsapp' && styles.selMethodActive]} onPress={() => setDeliveryMethod('whatsapp')}>
-              <Ionicons name="logo-whatsapp" size={32} color={deliveryMethod === 'whatsapp' ? '#25D366' : '#555'} />
-              <Text style={[styles.selText, deliveryMethod === 'whatsapp' && styles.selTextActive]}>WhatsApp</Text>
-              {deliveryMethod === 'whatsapp' && <View style={styles.dotCheck} />}
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.cartTotals}>
-            <View style={styles.totalRow}><Text style={styles.totalLbl}>Subtotal</Text><Text style={styles.totalVal}>R{getTotalAmount()}</Text></View>
-            <View style={styles.totalRow}><Text style={styles.totalLbl}>Service Fee</Text><Text style={styles.totalVal}>R100</Text></View>
-            <View style={styles.grandTotalLine}><Text style={styles.grandTotalLbl}>Total:</Text><Text style={styles.grandTotalVal}>R{getTotalAmount() + 100}</Text></View>
-          </View>
-
-          <TouchableOpacity style={styles.bigCheckoutBtn} onPress={() => setCurrentScreen('payment')}>
-            <Ionicons name="lock-closed" size={20} color="#fff" />
-            <Text style={styles.bigCheckoutTxt}>Secure Checkout</Text>
-          </TouchableOpacity>
-          <View style={{ height: 150 }} />
-        </ScrollView>
-        <NavigationBar />
-      </View>
-    );
-  };
-
-  const ProfileScreen = () => (
-    <View style={[styles.screen, { backgroundColor: '#0A0A0A' }]}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.profileAvatarSection}>
-          <View style={styles.avatarMainRing}>
-            <Image source={{ uri: userProfile.avatar }} style={styles.avatarActual} />
-          </View>
-          <Text style={styles.profileNameTxt}>{userProfile.name}</Text>
-          <Text style={styles.profileEmailTxt}>{userProfile.email}</Text>
+        ))}
+        <Text style={styles.methodHeading}>Receiving Method</Text>
+        <View style={styles.methodRow}>
+          <TouchableOpacity style={[styles.methodItem, deliveryMethod === 'digital' && styles.methodItemActive]} onPress={() => setDeliveryMethod('digital')}><Ionicons name="mail" size={32} color={deliveryMethod === 'digital' ? Colors.primary : Colors.textSecondary} /><Text style={[styles.methodItemText, deliveryMethod === 'digital' && styles.methodItemTextActive]}>Email</Text>{deliveryMethod === 'digital' && <View style={styles.methodCheck} />}</TouchableOpacity>
+          <TouchableOpacity style={[styles.methodItem, deliveryMethod === 'whatsapp' && styles.methodItemActive]} onPress={() => setDeliveryMethod('whatsapp')}><Ionicons name="logo-whatsapp" size={32} color={deliveryMethod === 'whatsapp' ? Colors.whatsapp : Colors.textSecondary} /><Text style={[styles.methodItemText, deliveryMethod === 'whatsapp' && styles.methodItemTextActive]}>WhatsApp</Text>{deliveryMethod === 'whatsapp' && <View style={styles.methodCheck} />}</TouchableOpacity>
         </View>
+        <View style={styles.summaryContainer}>
+          <View style={styles.sumRow}><Text style={styles.sumLbl}>Subtotal</Text><Text style={styles.sumVal}>R{totalAmount}</Text></View>
+          <View style={styles.sumRow}><Text style={styles.sumLbl}>Service Fee</Text><Text style={styles.sumVal}>R100</Text></View>
+          <View style={styles.sumTotalRow}><Text style={styles.sumTotalLbl}>Total:</Text><Text style={styles.sumTotalVal}>R{totalAmount + 100}</Text></View>
+        </View>
+        <TouchableOpacity style={styles.checkoutBtn} onPress={() => setCurrentScreen('payment')}><Ionicons name="lock-closed" size={20} color={Colors.white} /><Text style={styles.checkoutBtnText}>Secure Checkout</Text></TouchableOpacity>
+        <View style={{ height: 160 }} />
+      </ScrollView>
+      <NavigationBar />
+    </View>
+  );
 
-        <ScrollView style={styles.profileScrollBody}>
-          <LinearGradient colors={['#222', '#111']} style={styles.loyaltyCard}>
-            <Text style={styles.pointsLarge}>{userProfile.loyaltyPoints} pts</Text>
-            <Text style={styles.tierName}>GOLD LOYALTY TIER</Text>
+  const renderProfile = () => (
+    <View style={[styles.flexContainer, { backgroundColor: '#0A0A0A' }]}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.profileHeader}>
+          <View style={styles.profileAvatarContainer}><Image source={{ uri: userProfile.avatar }} style={styles.profileAvatarLarge} /></View>
+          <Text style={styles.profileName}>{userProfile.name}</Text>
+          <Text style={styles.profileEmail}>{userProfile.email}</Text>
+        </View>
+        <ScrollView style={styles.padding20}>
+          <LinearGradient colors={['#222', '#111']} style={styles.pointsContainer}>
+            <Text style={styles.pointsVal}>{userProfile.loyaltyPoints} pts</Text>
+            <Text style={styles.tierLbl}>GOLD LOYALTY TIER</Text>
           </LinearGradient>
-
-          <View style={styles.accountLinks}>
-            <AccountRow icon="ticket-outline" label="My Bookings" />
-            <AccountRow icon="card-outline" label="Payment Data" />
-            <AccountRow icon="settings-outline" label="Preferences" />
-            <AccountRow icon="help-buoy-outline" label="Live Support" />
+          <View style={styles.profileLinks}>
+            {['My Bookings', 'Payment Data', 'Preferences', 'Live Support'].map((link, i) => (
+              <TouchableOpacity key={i} style={styles.profileRow}><View style={styles.profileRowIcon}><Ionicons name="chevron-forward" size={18} color="#222" /></View><Text style={styles.profileRowText}>{link}</Text><Ionicons name="chevron-forward" size={18} color="#222" /></TouchableOpacity>
+            ))}
           </View>
-          <Text style={{ textAlign: 'center', color: '#444', marginTop: 30, fontSize: 13, fontWeight: '900' }}>Kid Of Dynamic 🇿🇦</Text>
-          <View style={{ height: 150 }} />
+          <Text style={styles.brandingFooter}>Kid Of Dynamic 🇿🇦</Text>
+          <View style={{ height: 160 }} />
         </ScrollView>
         <NavigationBar />
       </SafeAreaView>
     </View>
   );
 
-  const AccountRow = ({ icon, label }) => (
-    <TouchableOpacity style={styles.accRow}>
-      <View style={styles.accIconBox}><Ionicons name={icon} size={22} color="#7F00FF" /></View>
-      <Text style={styles.accLabel}>{label}</Text>
-      <Ionicons name="chevron-forward" size={18} color="#222" />
-    </TouchableOpacity>
+  const renderPayment = () => (
+    <View style={styles.successScreen}>
+      <View style={styles.successCircle}><Ionicons name="checkmark" size={60} color={Colors.white} /></View>
+      <Text style={styles.successText}>Success!</Text>
+      <Text style={styles.successSub}>Your tickets are in your wallet.</Text>
+      <TouchableOpacity style={styles.successBtn} onPress={() => {setCart({}); setCurrentScreen('home');}}><Text style={styles.successBtnText}>Finish</Text></TouchableOpacity>
+    </View>
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      {currentScreen === 'home' && <HomeScreen />}
-      {currentScreen === 'search' && <SearchScreen />}
-      {currentScreen === 'detail' && <DetailScreen />}
-      {currentScreen === 'cart' && <CartScreen />}
-      {currentScreen === 'profile' && <ProfileScreen />}
-      {currentScreen === 'payment' && (
-        <View style={styles.successScreen}>
-          <View style={styles.successCircle}><Ionicons name="checkmark" size={60} color="#fff" /></View>
-          <Text style={styles.successH1}>Success!</Text>
-          <Text style={styles.successSub}>Your tickets are ready in your wallet.</Text>
-          <TouchableOpacity style={styles.successBtn} onPress={() => {setCart({}); setCurrentScreen('home');}}><Text style={styles.successBtnTxt}>Finish</Text></TouchableOpacity>
-        </View>
-      )}
+    <View style={styles.mainContainer}>
+      {currentScreen === 'home' && renderHome()}
+      {currentScreen === 'search' && renderSearch()}
+      {currentScreen === 'detail' && renderDetail()}
+      {currentScreen === 'cart' && renderCart()}
+      {currentScreen === 'profile' && renderProfile()}
+      {currentScreen === 'payment' && renderPayment()}
       <StatusBar style="light" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#F8F9FF' },
-  homeHeader: { paddingBottom: 20 },
-  headerContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 25, paddingTop: 10 },
-  logoText: { fontSize: 30, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-  headerRight: { flexDirection: 'row', alignItems: 'center' },
-  headerIcon: { marginRight: 20 },
+  mainContainer: { flex: 1 },
+  flexContainer: { flex: 1 },
+  scrollView: { flex: 1, padding: Spacing.xl },
+  padding20: { padding: Spacing.lg },
+  // Header
+  headerGradient: { paddingBottom: Spacing.lg },
+  topHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: Spacing.xl, paddingTop: Spacing.sm },
+  logo: { fontSize: 30, fontWeight: '900', color: Colors.white, letterSpacing: -1 },
+  headerActions: { flexDirection: 'row', alignItems: 'center' },
+  searchIcon: { marginRight: Spacing.lg },
   headerAvatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: 'rgba(255,255,255,0.4)' },
-  homeContent: { flex: 1, padding: 25 },
-  sectionHeading: { fontSize: 24, fontWeight: '900', color: '#1A1A1A', marginBottom: 25 },
-  eventCardFull: { backgroundColor: '#fff', borderRadius: 28, marginBottom: 30, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 20, elevation: 8, overflow: 'hidden' },
-  eventCardImageFull: { width: '100%', height: 220 },
-  cardCategoryBadge: { position: 'absolute', top: 18, right: 18, backgroundColor: 'rgba(255,255,255,0.95)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
-  cardCategoryText: { color: '#7F00FF', fontSize: 12, fontWeight: '900' },
-  eventCardBodyFull: { padding: 20 },
-  eventCardTitleFull: { fontSize: 20, fontWeight: '900', color: '#1A1A1A', marginBottom: 8 },
-  eventCardMetaRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  eventCardLocFull: { fontSize: 14, color: '#666', fontWeight: '500' },
-  eventCardPriceFull: { fontSize: 22, fontWeight: '900', color: '#7F00FF' },
-  navContainer: { position: 'absolute', bottom: 70, left: 25, right: 25 },
-  navInner: { flexDirection: 'row', backgroundColor: '#fff', height: 75, borderRadius: 38, elevation: 25, shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 20, paddingHorizontal: 25 },
+  // Home
+  sectionTitle: { fontSize: 24, fontWeight: '900', color: Colors.textMain, marginBottom: Spacing.xl },
+  eventCard: { backgroundColor: Colors.white, borderRadius: 28, marginBottom: Spacing.xxl, ...Shadows.light, overflow: 'hidden' },
+  eventCardImage: { width: '100%', height: 220 },
+  categoryBadge: { position: 'absolute', top: 18, right: 18, backgroundColor: 'rgba(255,255,255,0.95)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+  categoryText: { color: Colors.primary, fontSize: 12, fontWeight: '900' },
+  eventCardBody: { padding: Spacing.lg },
+  eventName: { fontSize: 20, fontWeight: '900', color: Colors.textMain, marginBottom: 8 },
+  eventMeta: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  eventVenue: { fontSize: 14, color: Colors.textSecondary, fontWeight: '500' },
+  eventPrice: { fontSize: 22, fontWeight: '900', color: Colors.primary },
+  // Navigation
+  navWrapper: { position: 'absolute', bottom: 70, left: Spacing.xl, right: Spacing.xl },
+  navContent: { flexDirection: 'row', backgroundColor: Colors.white, height: 75, borderRadius: 38, ...Shadows.medium, paddingHorizontal: Spacing.xl },
   navBtn: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  navText: { fontSize: 11, color: '#999', marginTop: 4, fontWeight: '800' },
-  navTextActive: { color: '#7F00FF' },
-  cartBadgeSmall: { position: 'absolute', top: -5, right: -12, backgroundColor: '#FF3B30', width: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#fff' },
-  cartBadgeTextSmall: { color: '#fff', fontSize: 9, fontWeight: '900' },
-  detailHeroFull: { width: '100%', height: height * 0.5 },
-  detailBackContainer: { position: 'absolute', top: 0, left: 25 },
-  detailCircleBack: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', alignItems: 'center', marginTop: 10 },
-  detailBodyDark: { flex: 1, backgroundColor: '#000', borderTopLeftRadius: 35, borderTopRightRadius: 35, marginTop: -35, padding: 30 },
-  detailNameFull: { color: '#fff', fontSize: 32, fontWeight: '900', marginBottom: 25 },
-  detailMetaRowFull: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
-  detailMetaTextFull: { color: '#fff', marginLeft: 12, fontSize: 16, fontWeight: '600' },
-  detailAboutHeader: { color: '#7F00FF', fontSize: 18, fontWeight: '900', marginTop: 25, marginBottom: 15 },
-  detailAboutBody: { color: '#BBB', fontSize: 16, lineHeight: 26 },
-  bottomPayBar: { position: 'absolute', bottom: 30, left: 25, right: 25 },
-  bottomPayInner: { backgroundColor: '#7F00FF', height: 80, borderRadius: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 25 },
-  bottomPrice: { color: '#fff', fontSize: 26, fontWeight: '900', flex: 1 },
-  bottomQuantity: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 22, padding: 5, marginRight: 20 },
-  bottomQBtn: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center' },
-  bottomQText: { color: '#fff', paddingHorizontal: 15, fontWeight: '900', fontSize: 18 },
-  bottomBuyBtn: { backgroundColor: '#fff', paddingHorizontal: 22, paddingVertical: 14, borderRadius: 28 },
-  bottomBuyText: { color: '#7F00FF', fontWeight: '900', fontSize: 15 },
-  searchHeader: { flexDirection: 'row', alignItems: 'center', padding: 25, paddingTop: 10 },
-  searchBarContainer: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#222', borderRadius: 16, height: 55, paddingHorizontal: 15, marginRight: 15 },
-  searchBarInput: { flex: 1, marginLeft: 12, color: '#fff', fontSize: 16, fontWeight: '600' },
-  searchSectionTitle: { color: '#fff', fontSize: 20, fontWeight: '900', marginBottom: 20 },
-  trendingRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 18 },
-  trendingText: { color: '#DDD', marginLeft: 12, fontSize: 16, fontWeight: '600' },
-  categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  categoryGridItem: { width: '48%', backgroundColor: '#222', padding: 20, borderRadius: 18, marginBottom: 15, alignItems: 'center' },
-  categoryGridText: { color: '#fff', fontWeight: '800' },
-  cartHeaderFull: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 25, paddingTop: 10 },
-  cartHeaderTitleFull: { color: '#fff', fontSize: 24, fontWeight: '900' },
-  cartScrollFull: { paddingHorizontal: 25 },
-  cartCardItem: { flexDirection: 'row', backgroundColor: '#1E1E1E', padding: 15, borderRadius: 24, marginBottom: 20 },
-  cartCardImg: { width: 85, height: 85, borderRadius: 18 },
-  cartCardInfo: { flex: 1, marginLeft: 18, justifyContent: 'center' },
-  cartCardName: { color: '#fff', fontSize: 18, fontWeight: '900' },
-  cartCardSub: { color: '#777', fontSize: 12, marginTop: 4 },
-  cartCardPrice: { color: '#fff', fontSize: 16, fontWeight: '800', marginTop: 8 },
-  cartCardStepper: { alignItems: 'center', justifyContent: 'center', marginLeft: 10 },
-  cartCardCount: { color: '#fff', marginVertical: 6, fontWeight: '900', fontSize: 16 },
-  cartH2: { color: '#fff', fontSize: 20, fontWeight: '900', marginTop: 25, marginBottom: 20 },
-  methodFlexRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  selMethod: { flex: 1, backgroundColor: '#1E1E1E', borderRadius: 24, padding: 20, alignItems: 'center', marginHorizontal: 6, position: 'relative', borderWidth: 2, borderColor: 'transparent' },
-  selMethodActive: { borderColor: '#7F00FF' },
-  selText: { color: '#666', fontWeight: '900', marginTop: 12, fontSize: 14 },
-  selTextActive: { color: '#fff' },
-  dotCheck: { position: 'absolute', top: 12, right: 12, width: 10, height: 10, borderRadius: 5, backgroundColor: '#7F00FF' },
-  cartTotals: { marginTop: 35, backgroundColor: '#1E1E1E', padding: 25, borderRadius: 28 },
-  totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
-  totalLbl: { color: '#999', fontWeight: '700' },
-  totalVal: { color: '#fff', fontWeight: '800' },
-  grandTotalLine: { flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderColor: '#333', paddingTop: 20, marginTop: 10 },
-  grandTotalLbl: { color: '#fff', fontSize: 20, fontWeight: '900' },
-  grandTotalVal: { color: '#7F00FF', fontSize: 26, fontWeight: '900' },
-  bigCheckoutBtn: { backgroundColor: '#7F00FF', height: 75, borderRadius: 38, marginTop: 35, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-  bigCheckoutTxt: { color: '#fff', fontSize: 20, fontWeight: '900', marginLeft: 12 },
-  profileAvatarSection: { height: 320, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0A0A0A' },
-  avatarMainRing: { width: 170, height: 170, borderRadius: 85, borderWidth: 3, borderColor: '#7F00FF', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  avatarActual: { width: 145, height: 145, borderRadius: 72, borderWidth: 4, borderColor: '#FFD700' },
-  profileNameTxt: { color: '#fff', fontSize: 28, fontWeight: '900' },
-  profileEmailTxt: { color: '#555', fontSize: 15, fontWeight: '700', marginTop: 4 },
-  profileScrollBody: { flex: 1, paddingHorizontal: 25 },
-  loyaltyCard: { padding: 30, borderRadius: 30, alignItems: 'center', marginBottom: 40 },
-  pointsLarge: { color: '#fff', fontSize: 48, fontWeight: '900' },
-  tierName: { color: '#FFD700', fontSize: 12, fontWeight: '900', letterSpacing: 4, marginTop: 8 },
-  accountLinks: { marginBottom: 30 },
-  accRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#111', padding: 20, borderRadius: 22, marginBottom: 18 },
-  accIconBox: { width: 44, height: 44, borderRadius: 14, backgroundColor: 'rgba(127, 0, 255, 0.15)', justifyContent: 'center', alignItems: 'center' },
-  accLabel: { flex: 1, color: '#DDD', marginLeft: 18, fontSize: 17, fontWeight: '800' },
-  successScreen: { flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center', padding: 40 },
-  successCircle: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#00C853', justifyContent: 'center', alignItems: 'center', marginBottom: 30 },
-  successH1: { color: '#fff', fontSize: 32, fontWeight: '900', marginBottom: 15 },
+  navBtnText: { fontSize: 11, color: Colors.textMuted, marginTop: 4, fontWeight: '800' },
+  navBtnTextActive: { color: Colors.primary },
+  badgeContainer: { position: 'absolute', top: -5, right: -12, backgroundColor: Colors.red, width: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: Colors.white },
+  badgeText: { color: Colors.white, fontSize: 9, fontWeight: '900' },
+  // Search
+  searchHeader: { flexDirection: 'row', alignItems: 'center', padding: Spacing.xl, paddingTop: Spacing.sm },
+  searchBox: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.darkSurface, borderRadius: 16, height: 55, paddingHorizontal: Spacing.md, marginRight: Spacing.md },
+  searchTextInput: { flex: 1, marginLeft: 12, color: Colors.white, fontSize: 16, fontWeight: '600' },
+  cancelLink: { color: Colors.primary, fontWeight: '800' },
+  searchHeading: { color: Colors.white, fontSize: 20, fontWeight: '900', marginBottom: Spacing.lg },
+  trendRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 18 },
+  trendText: { color: Colors.textDarkBody, marginLeft: 12, fontSize: 16, fontWeight: '600' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  gridItem: { width: '48%', backgroundColor: Colors.darkSurface, padding: 20, borderRadius: 18, marginBottom: 15, alignItems: 'center' },
+  gridText: { color: Colors.white, fontWeight: '800' },
+  // Detail
+  heroImage: { width: '100%', height: height * 0.5 },
+  backBtnPos: { position: 'absolute', top: 0, left: Spacing.xl },
+  circleBack: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', alignItems: 'center', marginTop: 10 },
+  detailSheet: { flex: 1, backgroundColor: Colors.black, borderTopLeftRadius: 35, borderTopRightRadius: 35, marginTop: -35, padding: 30 },
+  detailTitle: { color: Colors.white, fontSize: 32, fontWeight: '900', marginBottom: 25 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
+  metaLabel: { color: Colors.white, marginLeft: 12, fontSize: 16, fontWeight: '600' },
+  aboutHeader: { color: Colors.primary, fontSize: 18, fontWeight: '900', marginTop: 25, marginBottom: 15 },
+  aboutBody: { color: Colors.textDarkBody, fontSize: 16, lineHeight: 26 },
+  payBarWrapper: { position: 'absolute', bottom: 30, left: Spacing.xl, right: Spacing.xl },
+  payBarContainer: { backgroundColor: Colors.primary, height: 80, borderRadius: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 25 },
+  payPrice: { color: Colors.white, fontSize: 26, fontWeight: '900', flex: 1 },
+  stepperContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 22, padding: 5, marginRight: 20 },
+  stepperVal: { color: Colors.white, paddingHorizontal: 15, fontWeight: '900', fontSize: 18 },
+  buyBtn: { backgroundColor: Colors.white, paddingHorizontal: 22, paddingVertical: 14, borderRadius: 28 },
+  buyBtnText: { color: Colors.primary, fontWeight: '900', fontSize: 15 },
+  // Cart
+  cartHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: Spacing.xl, paddingTop: Spacing.sm },
+  cartHeaderTitle: { color: Colors.white, fontSize: 24, fontWeight: '900' },
+  cartItem: { flexDirection: 'row', backgroundColor: Colors.darkSurface, padding: 15, borderRadius: 24, marginBottom: 20 },
+  cartItemImg: { width: 85, height: 85, borderRadius: 18 },
+  cartItemInfo: { flex: 1, marginLeft: 18, justifyContent: 'center' },
+  cartItemName: { color: Colors.white, fontSize: 18, fontWeight: '900' },
+  cartItemMeta: { color: Colors.textSecondary, fontSize: 12, marginTop: 4 },
+  cartItemPrice: { color: Colors.white, fontSize: 16, fontWeight: '800', marginTop: 8 },
+  cartItemStepper: { alignItems: 'center', justifyContent: 'center', marginLeft: 10 },
+  cartItemCount: { color: Colors.white, marginVertical: 6, fontWeight: '900', fontSize: 16 },
+  methodHeading: { color: Colors.white, fontSize: 20, fontWeight: '900', marginTop: 25, marginBottom: 20 },
+  methodRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  methodItem: { flex: 1, backgroundColor: Colors.darkSurface, borderRadius: 24, padding: 20, alignItems: 'center', marginHorizontal: 6, position: 'relative', borderWidth: 2, borderColor: 'transparent' },
+  methodItemActive: { borderColor: Colors.primary },
+  methodItemText: { color: Colors.textSecondary, fontWeight: '900', marginTop: 12, fontSize: 14 },
+  methodItemTextActive: { color: Colors.white },
+  methodCheck: { position: 'absolute', top: 12, right: 12, width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.primary },
+  summaryContainer: { marginTop: 35, backgroundColor: Colors.darkSurface, padding: 25, borderRadius: 28 },
+  sumRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  sumLbl: { color: Colors.textSecondary, fontWeight: '700' },
+  sumVal: { color: Colors.white, fontWeight: '800' },
+  sumTotalRow: { flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderColor: Colors.darkBorder, paddingTop: 20, marginTop: 10 },
+  sumTotalLbl: { color: Colors.white, fontSize: 20, fontWeight: '900' },
+  sumTotalVal: { color: Colors.primary, fontSize: 26, fontWeight: '900' },
+  checkoutBtn: { backgroundColor: Colors.primary, height: 75, borderRadius: 38, marginTop: 35, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+  checkoutBtnText: { color: Colors.white, fontSize: 20, fontWeight: '900', marginLeft: 12 },
+  // Profile
+  profileHeader: { height: 320, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0A0A0A' },
+  profileAvatarContainer: { width: 170, height: 170, borderRadius: 85, borderWidth: 3, borderColor: Colors.primary, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  profileAvatarLarge: { width: 145, height: 145, borderRadius: 72, borderWidth: 4, borderColor: Colors.gold },
+  profileName: { color: Colors.white, fontSize: 28, fontWeight: '900' },
+  profileEmail: { color: '#555', fontSize: 15, fontWeight: '700', marginTop: 4 },
+  pointsContainer: { padding: 30, borderRadius: 30, alignItems: 'center', marginBottom: 40 },
+  pointsVal: { color: Colors.white, fontSize: 48, fontWeight: '900' },
+  tierLbl: { color: Colors.gold, fontSize: 12, fontWeight: '900', letterSpacing: 4, marginTop: 8 },
+  profileLinks: { marginBottom: 30 },
+  profileRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#111', padding: 20, borderRadius: 22, marginBottom: 18 },
+  profileRowIcon: { width: 44, height: 44, borderRadius: 14, backgroundColor: 'rgba(127, 0, 255, 0.15)', justifyContent: 'center', alignItems: 'center' },
+  profileRowText: { flex: 1, color: '#DDD', marginLeft: 18, fontSize: 17, fontWeight: '800' },
+  brandingFooter: { textAlign: 'center', color: '#444', marginTop: 30, fontSize: 13, fontWeight: '900' },
+  // Success
+  successScreen: { flex: 1, backgroundColor: Colors.black, justifyContent: 'center', alignItems: 'center', padding: 40 },
+  successCircle: { width: 120, height: 120, borderRadius: 60, backgroundColor: Colors.success, justifyContent: 'center', alignItems: 'center', marginBottom: 30 },
+  successText: { color: Colors.white, fontSize: 32, fontWeight: '900', marginBottom: 15 },
   successSub: { color: '#777', fontSize: 16, textAlign: 'center', lineHeight: 24, marginBottom: 50 },
-  successBtn: { backgroundColor: '#fff', paddingHorizontal: 50, paddingVertical: 18, borderRadius: 35 },
-  successBtnTxt: { color: '#000', fontSize: 18, fontWeight: '900' }
+  successBtn: { backgroundColor: Colors.white, paddingHorizontal: 50, paddingVertical: 18, borderRadius: 35 },
+  successBtnText: { color: Colors.black, fontSize: 18, fontWeight: '900' }
 });
