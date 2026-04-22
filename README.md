@@ -1,7 +1,10 @@
-# Ticketza 🇿🇦 (Expo Mobile Application)
-[![About Me](https://img.shields.io/badge/About_Me-Kid_Of_Dynamic-7F00FF?style=for-the-badge&logo=github)](./ABOUT_ME.md)
+# 🎫 KIROV DYNAMICS | TICKETZA
 
-Ticketza is a centralized event ticketing platform designed for the South African market. This repository contains the **high-performance mobile application** built using the **Expo (React Native)** framework.
+[![Kirov Dynamics](https://img.shields.io/badge/Kirov_Dynamics-AI_Product_Builder-002D62?style=for-the-badge&labelColor=0d1117)](https://github.com/Raphasha27)
+![Role](https://img.shields.io/badge/Role-AI_Product_Builder-blue?style=for-the-badge&labelColor=0d1117)
+
+**Ticketza** is a centralized event ticketing platform designed for the South African market. Developed by **Kirov Dynamics Technology**, it demonstrates elite **AI Product Building** by delivering a high-performance mobile application for seamless event orchestration.
+
 
 
 ## 📱 Mobile App Features
