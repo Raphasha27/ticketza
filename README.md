@@ -11,7 +11,7 @@ Welcome to the internal private repository for **ticketza**.
 > **Note on Deployment:** Any previous live deployments (e.g., Vercel, Heroku) tied to this repository have been suspended to prevent 404 billing errors. This project is currently offline while the infrastructure is migrated to our internal sovereign cloud network.
 
 ## ?? Key Architectural Features
-- **High-Performance Core:** Built for scalability and autonomous operations.
+- **Scalable Core:** Built for scalability and autonomous operations.
 - **Modern UI/UX:** Features advanced dashboard logic and secure routing.
 - **Sovereign Infrastructure Ready:** Refactoring for the Kirov Dynamics ecosystem.
 
@@ -29,3 +29,4 @@ cd ticketza
 - [x] Clear dead Vercel/Heroku links to prevent 404 routing errors.
 - [ ] Migrate CI/CD to local GitHub Actions.
 - [ ] Deploy isolated -lab environment.
+
