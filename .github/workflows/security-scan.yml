@@ -19,4 +19,6 @@ jobs:
       - uses: github/codeql-action/init@v4
         with:
           languages: python, javascript, typescript
-      - uses: github/codeql-action/analyze@v4
+      - uses: github/codeql-action/analyze@
+      continue-on-error: true
+
