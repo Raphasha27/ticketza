@@ -14,3 +14,14 @@ out/
 build/
 dist/
 *.log
+
+# Security
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pfx
+config/secrets.json
+credentials.json
