@@ -1,0 +1,21 @@
+name: Bandit Security Scan
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  bandit:
+    name: Bandit Python SAST
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run Bandit
+        run: |
+          pip install bandit
+          bandit -r -lll -q .
